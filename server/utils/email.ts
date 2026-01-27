@@ -10,12 +10,19 @@ export async function sendOtpEmail(toEmail: string, otpCode: string) {
     throw new Error('Email service not configured');
   }
 
+  // const transporter = nodemailer.createTransport({
+  //   host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  //   port: Number(process.env.SMTP_PORT) || 465,
+  //   secure: process.env.SMTP_SECURE ? process.env.SMTP_SECURE === 'true' : true,
+  //   auth: { user, pass },
+  // });
   const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: Number(process.env.SMTP_PORT) || 465,
-    secure: process.env.SMTP_SECURE ? process.env.SMTP_SECURE === 'true' : true,
-    auth: { user, pass },
-  });
+  service: "gmail",
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS, // Gmail App Password
+  },
+});
 
   await transporter.sendMail({
     from: `HSN Finder <${fromEmail}>`,
