@@ -1,39 +1,37 @@
 import nodemailer from 'nodemailer';
 
-import nodemailer from 'nodemailer';
-
 export async function sendOtpEmail(toEmail: string, otpCode: string) {
   try {
-    const user = process.env.SMTP_USER;
-    let pass = process.env.SMTP_PASS || '';
-    pass = pass.replace(/\s+/g, '');
+    const user = process.env.SMTP_USER!;
+    const pass = process.env.SMTP_PASS!.replace(/\s+/g, '');
     const fromEmail = process.env.FROM_EMAIL || user;
 
-    if (!user || !pass) {
-      throw new Error('Email service not configured');
-    }
-
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
       auth: { user, pass },
-      connectionTimeout: 5000, // ⬅️ ADD THIS
-  greetingTimeout: 5000,
-  socketTimeout: 5000,
     });
 
-    await transporter.verify(); // 🔍 DEBUG
-    console.log("SMTP READY");
+    await transporter.verify();
 
     await transporter.sendMail({
       from: `HSN Finder <${fromEmail}>`,
       to: toEmail,
       subject: 'Your HSN Finder OTP',
-      text: `Your verification code is ${otpCode}`,
-      html: `<p>Your verification code is <strong>${otpCode}</strong></p>`,
+      html: `
+        <div style="font-family:Arial">
+          <h2>HSN Finder</h2>
+          <p>Your OTP is:</p>
+          <h1>${otpCode}</h1>
+          <p>This OTP is valid for 5 minutes.</p>
+        </div>
+      `,
     });
 
-  } catch (error) {
-    console.error("EMAIL ERROR 👉", error);
-    throw error;
+  } catch (err) {
+    console.error('EMAIL ERROR:', err);
+    throw err;
   }
 }
+
