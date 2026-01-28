@@ -4,7 +4,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function sendOtpEmail(toEmail: string, otpCode: string) {
   await resend.emails.send({
-    from: "HSN Finder <neelsharma746889@gmail.com>",
+    from: "HSN Finder <onboarding@resend.dev>",
     to: [toEmail],
     subject: "Your OTP Code",
     html: `
