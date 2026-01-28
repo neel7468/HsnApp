@@ -1,34 +1,18 @@
-import nodemailer from 'nodemailer';
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function sendOtpEmail(toEmail: string, otpCode: string) {
-  const user = process.env.SMTP_USER;
-  let pass = process.env.SMTP_PASS || '';
-  pass = pass.replace(/\s+/g, '');
-  const fromEmail = process.env.FROM_EMAIL || user;
-
-  if (!user || !pass) {
-    throw new Error('Email service not configured');
-  }
-
-  // const transporter = nodemailer.createTransport({
-  //   host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  //   port: Number(process.env.SMTP_PORT) || 465,
-  //   secure: process.env.SMTP_SECURE ? process.env.SMTP_SECURE === 'true' : true,
-  //   auth: { user, pass },
-  // });
-  const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS, // Gmail App Password
-  },
-});
-
-  await transporter.sendMail({
-    from: `HSN Finder <${fromEmail}>`,
-    to: toEmail,
-    subject: 'Your HSN Finder OTP',
-    text: `Your verification code is ${otpCode}. It will expire in 10 minutes.`,
-    html: `<p>Your verification code is <strong>${otpCode}</strong>.</p><p>It will expire in 10 minutes.</p>`,
+  await resend.emails.send({
+    from: "HSN Finder <neelsharma746889@gmail.com>",
+    to: [toEmail],
+    subject: "Your OTP Code",
+    html: `
+      <div style="font-family:sans-serif">
+        <h2>Your OTP</h2>
+        <h1>${otpCode}</h1>
+        <p>This OTP is valid for 5 minutes.</p>
+      </div>
+    `,
   });
 }
