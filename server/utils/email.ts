@@ -18,4 +18,5 @@ export async function sendOtpEmail(toEmail: string, otpCode: string) {
     console.error("❌ SENDGRID ERROR:", err?.response?.body || err);
     throw err;
   }
+  
 }
