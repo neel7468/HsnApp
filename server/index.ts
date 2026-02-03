@@ -3,7 +3,8 @@ import express from 'express';
 import cors from 'cors';
 import { connectDB } from './config/db';
 import authRoutes from './routes/auth.routes';
-
+import paymentRoutes from "./routes/payment.routes";
+import historyRoutes from "./routes/history.routes";
 const app = express();
 
 // app.use(express.json());
@@ -31,6 +32,8 @@ app.use(
 
 
 app.use('/api/auth', authRoutes);
+app.use('/api/payment', paymentRoutes);
+app.use('/api/history', historyRoutes);
 
 /* ================= START SERVER ================= */
 
